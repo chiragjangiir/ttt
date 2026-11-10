@@ -1,4 +1,10 @@
 {
+  "command.splitEditorDown": "Split Down",
+  "command.equalizeGroups": "Equalize Editor Groups",
+  "command.focusEditorLeft": "View: Focus Editor Group Left",
+  "command.focusEditorRight": "View: Focus Editor Group Right",
+  "command.focusEditorUp": "View: Focus Editor Group Above",
+  "command.focusEditorDown": "View: Focus Editor Group Below",
   "command.splitEditor": "Split in Half",
   "command.closeSplit": "Close Split",
   "about.aboutTTTEditor": "About TTT Editor",
