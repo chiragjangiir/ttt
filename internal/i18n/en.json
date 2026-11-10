@@ -1,4 +1,5 @@
 {
+  "status.failedToSaveEditorLayout": "Failed to save editor layout: {error}",
   "command.openEditorToSide": "Open to the Side",
   "command.moveEditorToOtherGroup": "Move to Other Group",
   "command.splitEditorDown": "Split Down",

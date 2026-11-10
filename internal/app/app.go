@@ -169,7 +169,9 @@ type App struct {
 	loadedGrammars  []config.GrammarSetting
 	// welcomeIsEmptyState is set while the welcome page stands in for an
 	// empty editor, as opposed to being opened from Help.
-	welcomeIsEmptyState bool
+	restoreEditorLayout   bool
+	restoringEditorLayout bool
+	welcomeIsEmptyState   bool
 	// welcomeWhenEmpty is set once the session reaches the welcome page with no
 	// folder, and cleared when a folder opens: only then does closing every tab
 	// bring the page back. Loose files opened from the command line still end

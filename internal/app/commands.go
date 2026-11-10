@@ -28,6 +28,7 @@ func RegisterCommands(app *App) {
 	registerWidgetCallbacks(app)
 	RegisterEscapeDismissers(app)
 	app.syncApps()
+	app.restoreEditorGroups()
 }
 
 func (a *App) RebindKeys() {
