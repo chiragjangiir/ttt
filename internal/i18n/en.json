@@ -1,4 +1,5 @@
 {
+  "settings.highlightActiveGroupBorder": "Highlight active group border",
   "command.explorerOpenToSide": "Explorer: Open to the Side",
   "status.failedToSaveEditorLayout": "Failed to save editor layout: {error}",
   "command.openEditorToSide": "Open to the Side",
