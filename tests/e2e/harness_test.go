@@ -134,9 +134,7 @@ func (h *testHarness) redraw() {
 }
 
 func (h *testHarness) flushOnChange() {
-	if h.app.EditorGroup.Editor != nil {
-		h.app.EditorGroup.Editor.FlushOnChange()
-	}
+	h.app.FlushEditorOnChange()
 }
 
 func (h *testHarness) pressKey(key tcell.Key, mod tcell.ModMask) {
