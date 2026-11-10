@@ -725,16 +725,12 @@ func registerWidgetCallbacks(app *App) {
 		app.Root.SetFocus(app.EditorGroup)
 	}
 
-	app.EditorGroup.OnActiveTabChange = func() {
-		app.Root.ClearEditorLinkHover()
-		if findBar, ok := app.Root.TopOverlayWidget().(*ui.FindBarWidget); ok && findBar.OnEditorTabChange != nil {
-			findBar.OnEditorTabChange()
-		}
-		if bar := app.findBar(); bar != nil && bar.Query() != "" {
-			return
-		}
-		app.applySearchHighlights()
-	}
+	app.wireEditorGroupActivation(app.EditorGroup)
+	app.EditorSplit.OnResize = func(width int) { app.EditorSplit.RightW = width }
+	app.EditorSplit.OnTopClick = app.focusEditorAfterClick
+	app.EditorSplit.OnBottomClick = app.focusEditorAfterClick
+
+	app.EditorGroup.OnActiveTabChange = app.editorTabChanged
 
 	app.EditorGroup.TabBar.OnTabClose = func(index int) {
 		app.EditorGroup.SwitchTab(index)
@@ -747,7 +743,13 @@ func registerWidgetCallbacks(app *App) {
 	}
 
 	app.EditorGroup.TabBar.MoreButton.OnClick = func(sx, sy int) {
+		splitLabel, splitCommand := i18n.Text("command.splitEditor"), "editor.split"
+		if app.EditorSplit.ShowBottom {
+			splitLabel, splitCommand = i18n.Text("command.closeSplit"), "editor.closeSplit"
+		}
 		moreMenu := []ui.ContextMenuItem{
+			{Label: splitLabel, Command: splitCommand},
+			ui.MenuSep(),
 			{Label: i18n.Text("menu.closeAll"), Command: "tab.closeAll"},
 			{Label: i18n.Text("menu.closeAllSaved"), Command: "tab.closeAllSaved"},
 			ui.MenuSep(),
@@ -889,12 +891,7 @@ func registerWidgetCallbacks(app *App) {
 	app.ContentSplit.OnResize = app.resizePanel
 	app.ContentSplit.OnResizeEnd = app.finishPanelResize
 
-	app.ContentSplit.OnTopClick = func() {
-		if app.Root.HasOverlay() || app.Root.FocusClaimed() {
-			return
-		}
-		app.Root.SetFocus(app.EditorGroup)
-	}
+	app.ContentSplit.OnTopClick = app.focusEditorAfterClick
 
 	app.ContentSplit.OnBottomClick = func() {
 		if app.Root.HasOverlay() || app.Root.FocusClaimed() {
@@ -968,4 +965,15 @@ func registerWidgetCallbacks(app *App) {
 			openContextMenu(app, items, sx, sy)
 		}},
 	}
+}
+
+func (app *App) editorTabChanged() {
+	app.Root.ClearEditorLinkHover()
+	if findBar, ok := app.Root.TopOverlayWidget().(*ui.FindBarWidget); ok && findBar.OnEditorTabChange != nil {
+		findBar.OnEditorTabChange()
+	}
+	if bar := app.findBar(); bar != nil && bar.Query() != "" {
+		return
+	}
+	app.applySearchHighlights()
 }

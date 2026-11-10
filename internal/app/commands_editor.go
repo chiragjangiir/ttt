@@ -419,7 +419,11 @@ func (a *App) Quit() {
 }
 
 func (a *App) quitWithAction(onQuit func()) {
-	if !a.EditorGroup.AnyDirty() {
+	dirty := false
+	for _, group := range a.editorGroups() {
+		dirty = dirty || group.AnyDirty()
+	}
+	if !dirty {
 		onQuit()
 		return
 	}
@@ -433,10 +437,12 @@ func (a *App) quitWithAction(onQuit func()) {
 	callbacks := []func(){cancel, onQuit}
 	showSaveAll := a.Settings.Editor.SaveAllOnQuit
 	if a.Settings.Editor.SaveAllOnQuitExceptUnnamed {
-		for i := 0; i < a.EditorGroup.TabCount(); i++ {
-			if a.EditorGroup.IsTabUnnamed(i) {
-				showSaveAll = false
-				break
+		for _, group := range a.editorGroups() {
+			for i := 0; i < group.TabCount(); i++ {
+				if group.IsTabUnnamed(i) {
+					showSaveAll = false
+					break
+				}
 			}
 		}
 	}
@@ -475,6 +481,14 @@ func (a *App) saveAllAndQuit(onQuit func()) {
 		}
 	}
 	if next < 0 {
+		for _, group := range a.editorGroups() {
+			if group != a.EditorGroup && group.AnyDirty() {
+				a.activateEditorGroup(group)
+				a.FocusEditor()
+				a.saveAllAndQuit(onQuit)
+				return
+			}
+		}
 		onQuit()
 		return
 	}

@@ -1,4 +1,6 @@
 {
+  "command.splitEditor": "Split in Half",
+  "command.closeSplit": "Close Split",
   "about.aboutTTTEditor": "About TTT Editor",
   "about.credits": "ttt is great because of everyone who contributes code, reports issues, and uses it",
   "about.gitHub": "GitHub",

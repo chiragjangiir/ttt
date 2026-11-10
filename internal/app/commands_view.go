@@ -39,6 +39,9 @@ func (a *App) focusedRegion() string {
 	if f == a.BottomPanel || f == a.BottomPanel.ActiveWidget() {
 		return "bottom"
 	}
+	if a.EditorSplit != nil && a.EditorSplit.ShowBottom && f == a.EditorSplit.Bottom {
+		return "editorRight"
+	}
 	return "editor"
 }
 
@@ -47,6 +50,9 @@ func (a *App) focusNextGroup() {
 		return
 	}
 	regions := []string{"editor"}
+	if a.EditorSplit != nil && a.EditorSplit.ShowBottom {
+		regions = append(regions, "editorRight")
+	}
 	if a.Sidebar.Visible {
 		regions = append(regions, "sidebar")
 	}
@@ -69,6 +75,9 @@ func (a *App) focusPrevGroup() {
 		return
 	}
 	regions := []string{"editor"}
+	if a.EditorSplit != nil && a.EditorSplit.ShowBottom {
+		regions = append(regions, "editorRight")
+	}
 	if a.Sidebar.Visible {
 		regions = append(regions, "sidebar")
 	}
@@ -92,7 +101,13 @@ func (a *App) focusPrevGroup() {
 func (a *App) focusRegion(region string) {
 	switch region {
 	case "editor":
-		a.FocusEditor()
+		if a.EditorSplit != nil && a.EditorSplit.ShowBottom {
+			a.Root.SetFocus(a.EditorSplit.Top)
+		} else {
+			a.FocusEditor()
+		}
+	case "editorRight":
+		a.Root.SetFocus(a.EditorSplit.Bottom)
 	case "sidebar":
 		a.FocusSidebar()
 	case "bottom":
@@ -286,6 +301,8 @@ func (a *App) ToggleSearchReplace() {
 }
 
 func registerViewCommands(app *App) {
+	app.Reg.Register(command.Command{ID: "editor.split", Title: i18n.Text("command.splitEditor"), Handler: app.SplitEditor})
+	app.Reg.Register(command.Command{ID: "editor.closeSplit", Title: i18n.Text("command.closeSplit"), Handler: app.CloseEditorSplit})
 	reg := app.Reg
 
 	reg.Register(command.Command{
