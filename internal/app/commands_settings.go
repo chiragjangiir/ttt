@@ -102,6 +102,9 @@ func (a *App) ApplySettings(s config.Settings) {
 		a.language.updates.Stop()
 	}
 	*a.Settings = s
+	if s.Editor.RestoreTabs && !prev.Editor.RestoreTabs {
+		a.sessionSavingPaused = false
+	}
 	a.Root.SetControlModifiers(controlModifiers(s.Keyboard.ModifierKey))
 	if a.Reg != nil {
 		for _, kb := range a.Keybindings {
@@ -267,6 +270,7 @@ func (a *App) ApplySettings(s config.Settings) {
 
 func registerSettingsCommands(app *App) {
 	reg := app.Reg
+	reg.Register(command.Command{ID: "session.clear", Title: i18n.Text("session.clearCommand"), Handler: app.ClearEditorSessions})
 
 	reg.Register(command.Command{
 		ID: "settings.reload", Title: i18n.Text("command.reloadSettings"),

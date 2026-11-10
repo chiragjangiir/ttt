@@ -175,6 +175,7 @@ type EditorSettings struct {
 
 	SaveAllOnQuit              bool `json:"saveAllOnQuit"`
 	SaveAllOnQuitExceptUnnamed bool `json:"saveAllOnQuitExceptUnnamed"`
+	RestoreTabs                bool `json:"restoreTabs"`
 }
 
 type AutoClosingSettings struct {
