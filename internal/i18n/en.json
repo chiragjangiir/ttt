@@ -1,4 +1,6 @@
 {
+  "command.openEditorToSide": "Open to the Side",
+  "command.moveEditorToOtherGroup": "Move to Other Group",
   "command.splitEditorDown": "Split Down",
   "command.equalizeGroups": "Equalize Editor Groups",
   "command.focusEditorLeft": "View: Focus Editor Group Left",
